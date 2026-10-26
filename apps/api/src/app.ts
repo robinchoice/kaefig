@@ -7,6 +7,7 @@ import { t } from './lib/i18n';
 import { captureException } from './monitoring';
 import { agentRoutes } from './routes/agents';
 import { altchaRoutes } from './routes/altcha';
+import { arenaRoutes } from './routes/arena';
 import { authRoutes } from './routes/auth';
 import { feedbackRoutes } from './routes/feedback';
 import { passkeyRoutes, wellKnownRoutes } from './routes/passkeys';
@@ -54,6 +55,7 @@ export function createApp(db: Database) {
       // The app asks this at launch, the check above answers it
       .get('/api/v1/app', (c) => c.json({ ok: true }))
       .basePath('/api/v1')
+      .route('/arena', arenaRoutes)
       .route('/altcha', altchaRoutes)
       .route('/auth', authRoutes)
       .route('/auth/passkeys', passkeyRoutes)

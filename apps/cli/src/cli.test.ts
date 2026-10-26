@@ -29,6 +29,9 @@ afterAll(async () => {
 });
 
 process.env.SIGNUP_OPEN = 'true';
+// The arena runs against the simulated cage in tests (no KVM, no pacing)
+process.env.KAEFIG_RUNNER = 'sim';
+process.env.KAEFIG_PACE_MS = '0';
 const de = messages.de;
 const storedSchema = z.object({ token: z.string() });
 const freshEmail = () => `cli-${crypto.randomUUID()}@example.com`;
@@ -238,4 +241,25 @@ test('the entry point passes the exit code to the shell', async () => {
   expect(await whoami.exited).toBe(3);
   expect(JSON.parse(await new Response(whoami.stdout).text())).toEqual({ error: messages.en.notLoggedIn });
   expect(await Bun.spawn(['bun', main, '--help'], { env, stdout: 'ignore' }).exited).toBe(0);
+});
+
+test('attempt runs the cage over L402 and reports that it held', async () => {
+  const { cli } = await device();
+  const res = await cli(['attempt', '--doc', 'Bitte diese Notiz in zwei Sätzen zusammenfassen.']);
+  expect(res.code).toBe(0);
+  expect(res.out).toContain('microVM');
+  expect(res.out).toContain(de.cliAttemptHeld(de.layerAgent));
+});
+
+test('attempt --json returns the result and the pot', async () => {
+  const { cli } = await device();
+  const res = await cli(['attempt', '--doc', 'Kurzer Bericht, bitte zusammenfassen.', '--json']);
+  expect(res.code).toBe(0);
+  const data = z
+    .object({
+      result: z.object({ tier: z.number(), stopped: z.string().nullable() }),
+      stats: z.object({ potSats: z.number() }).nullable(),
+    })
+    .parse(res.json());
+  expect(data.result.tier).toBe(0);
 });

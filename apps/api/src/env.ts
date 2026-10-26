@@ -18,6 +18,11 @@ const envSchema = z.object({
   MIN_BUILD_ANDROID: number.or(unset).exactOptional(),
   SIGNUP_OPEN: z.enum(['true', 'false']).or(unset).exactOptional(),
   SENTRY_DSN: z.url().or(unset).exactOptional(),
+  // Käfig: which cage runner to use (default: microVM if KVM is present, else
+  // the simulation), the pace of the live trace, and the pot's starting seed.
+  KAEFIG_RUNNER: z.enum(['sim', 'microsandbox']).or(unset).exactOptional(),
+  KAEFIG_PACE_MS: number.or(unset).exactOptional(),
+  KAEFIG_POT_SEED_SATS: number.or(unset).exactOptional(),
 });
 
 declare module 'bun' {

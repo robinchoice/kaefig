@@ -1,6 +1,7 @@
 import type { FeedbackContext, UpdateContent } from '@app/shared';
 import {
   bigint,
+  bigserial,
   boolean,
   customType,
   integer,
@@ -146,3 +147,48 @@ export const updateDeliveries = pgTable(
   },
   (table) => [unique().on(table.updateId, table.userId)],
 );
+
+// Käfig: one attempt in the arena. Created only after a paid L402 token; the
+// unique paymentHash makes a proof single-use (no replay). tier 0 = the cage
+// held, 1–3 = the boundary the agent broke, stopped names the layer it was
+// stopped at when it held. The document is the untrusted input the agent saw.
+export const attempts = pgTable('attempts', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  paymentHash: varchar('payment_hash', { length: 64 }).notNull().unique(),
+  nym: varchar('nym', { length: 40 }).default('anon').notNull(),
+  // Only to pay out a confirmed break, verified by hand
+  lnAddress: varchar('ln_address', { length: 200 }),
+  document: text('document').notNull(),
+  tier: integer('tier').default(0).notNull(),
+  stopped: varchar('stopped', { length: 10 }),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
+// A payout owed for a confirmed break. Stays `pending` until Robin reviews and
+// pays it by hand (prototypes.md, Grundsatz 8); no agent ever triggers a payout.
+export const claims = pgTable('claims', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  attemptId: uuid('attempt_id')
+    .references(() => attempts.id, { onDelete: 'cascade' })
+    .notNull(),
+  tier: integer('tier').notNull(),
+  sats: integer('sats').notNull(),
+  lnAddress: varchar('ln_address', { length: 200 }),
+  // pending, paid, or rejected
+  status: varchar('status', { length: 10 }).default('pending').notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  decidedAt: timestamp('decided_at'),
+});
+
+// The public, tamper-evident protocol (README, „Protokoll“), our Turso
+// stand-in. Each row's hash chains in the previous hash, so an edited or
+// removed row breaks the chain. Appends are serialized by an advisory lock.
+export const protocol = pgTable('protocol', {
+  seq: bigserial('seq', { mode: 'number' }).primaryKey(),
+  at: timestamp('at').defaultNow().notNull(),
+  event: varchar('event', { length: 40 }).notNull(),
+  subject: varchar('subject', { length: 120 }).notNull(),
+  detail: varchar('detail', { length: 300 }).notNull(),
+  prevHash: varchar('prev_hash', { length: 64 }),
+  hash: varchar('hash', { length: 64 }).notNull(),
+});

@@ -60,21 +60,31 @@
     unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
       U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
   }
+  /* Käfig runs in a dark console look (DESIGN: Glaskasten im Konsole-Stil).
+     The starter's variable names stay so Button, Input and the footer adapt. */
   :global(:root) {
-    color-scheme: light;
-    --bg: #f4f4f1;
-    --surface: #fff;
-    --border: rgb(23 23 26 / 0.16);
-    --text: #17171a;
-    --muted: #5e5e66;
-    --needs: #8f5a0c;
-    --needs-bg: #f4b44c;
-    --new: #1d6a44;
-    --new-bg: #6ccf8e;
-    --error: #b3262d;
-    --error-bg: #f2545b;
-    --radius: 8px;
-    --font-display: 'Bricolage Grotesque', system-ui, sans-serif;
+    color-scheme: dark;
+    --bg: #0a0c0b;
+    --surface: #111513;
+    --panel: #111513;
+    --line: #23302a;
+    --border: #23302a;
+    --text: #c9d6cf;
+    --fg: #c9d6cf;
+    --muted: #6f8278;
+    --dim: #6f8278;
+    --green: #5cff9d;
+    --amber: #ffb547;
+    --red: #ff5f56;
+    --blue: #8fd6ff;
+    --needs: #ffb547;
+    --needs-bg: #3a2c10;
+    --new: #5cff9d;
+    --new-bg: #0e2c1c;
+    --error: #ff5f56;
+    --error-bg: #2a1210;
+    --radius: 6px;
+    --font-display: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
     --spectrum: linear-gradient(90deg, #f2545b, #fb8c45, #f2c14e, #6ccf8e, #46bfe0, #8e92f8, #c39bf2);
   }
   :global(*) {
@@ -84,15 +94,14 @@
     margin: 0;
     background: var(--bg);
     color: var(--text);
-    font-family: system-ui, sans-serif;
-    line-height: 1.5;
+    font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+    line-height: 1.55;
   }
   :global(h1, h2) {
     font-family: var(--font-display);
-    font-weight: 750;
-    font-stretch: 80%;
-    line-height: 1.05;
-    letter-spacing: -0.02em;
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
   }
   :global(a) {
     color: inherit;

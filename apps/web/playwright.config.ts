@@ -34,6 +34,9 @@ export default defineConfig({
         ADMIN_EMAILS: 'e2e-admin@example.com',
         SIGNUP_OPEN: '',
         SIGNUP_ALLOWLIST: '',
+        // No KVM in CI, and the trace needs no pacing in a test
+        KAEFIG_RUNNER: 'sim',
+        KAEFIG_PACE_MS: '0',
       },
       url: `${API}/api/health`,
       reuseExistingServer: false,

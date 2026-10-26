@@ -2,12 +2,13 @@ import { parseArgs } from 'node:util';
 import { APP_NAME, type Messages, messages, pickLocale } from '@app/shared';
 import { createClient } from './client';
 import { type Command, EXIT, Failure, type Io, type Result } from './command';
+import { arena } from './commands/arena';
 import { auth } from './commands/auth';
 import { settings } from './commands/settings';
 import { DEFAULT_URL, loadSession, SLUG } from './config';
 
 // Every command of the CLI. A new one goes in here (README, „CLI“).
-export const commands: Record<string, Command> = { ...auth, settings };
+export const commands: Record<string, Command> = { ...auth, ...arena, settings };
 
 const globalOptions = {
   json: { type: 'boolean' },

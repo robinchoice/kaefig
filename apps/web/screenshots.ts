@@ -8,7 +8,7 @@ import { type BrowserContextOptions, chromium } from '@playwright/test';
 const BASE = process.argv[2] ?? 'http://localhost:5173';
 const OUT = new URL('../../docs/screenshots/', import.meta.url);
 
-const PAGES: Record<string, string> = { home: '/', login: '/login' };
+const PAGES: Record<string, string> = { home: '/', regeln: '/regeln' };
 // Add 'en' when the English pictures show more than the same screens in another language
 const LOCALES = ['de'];
 const DEVICES: Record<string, BrowserContextOptions> = {

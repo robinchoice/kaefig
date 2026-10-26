@@ -27,6 +27,9 @@ const startup = (async () => {
 
   const server = Bun.serve({
     port: Number(process.env.PORT || 3000),
+    // A live arena run streams its trace for a while, and the first microVM
+    // boot may pull an image. Keep the connection open past the 10 s default.
+    idleTimeout: 255,
     fetch: createApp(db).fetch,
   });
   console.log(`[boot] API listening on port ${server.port}`);

@@ -36,6 +36,12 @@ services:
       - MIN_BUILD_IOS=${MIN_BUILD_IOS:-}
       - MIN_BUILD_ANDROID=${MIN_BUILD_ANDROID:-}
       - SENTRY_DSN=${SENTRY_DSN:-}
+      # Käfig: the microVM runner needs a host with KVM (not the Hetzner cloud);
+      # without it the arena falls back to the simulation. Pot seed and server
+      # are Robin's call at live-go (AGENTS.md, „Abweichungen“).
+      - KAEFIG_RUNNER=${KAEFIG_RUNNER:-}
+      - KAEFIG_PACE_MS=${KAEFIG_PACE_MS:-}
+      - KAEFIG_POT_SEED_SATS=${KAEFIG_POT_SEED_SATS:-}
     depends_on:
       postgres:
         condition: service_healthy
